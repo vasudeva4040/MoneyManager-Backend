@@ -1,0 +1,23 @@
+{
+  "name": "moneymanagerbackend",
+  "version": "1.0.0",
+  "description": "NodeJS Backend application to make calls to the AWS DDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gautham2/MoneyManagerBackend.git"
+  },
+  "author": "gautham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gautham2/MoneyManagerBackend/issues"
+  },
+  "homepage": "https://github.com/Gautham2/MoneyManagerBackend#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.0"
+  }
+}
