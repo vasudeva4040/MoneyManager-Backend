@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Gautham2/MoneyManagerBackend#readme",
   "dependencies": {
+    "aws-sdk": "^2.1619.0",
     "express": "^4.19.2",
     "nodemon": "^3.1.0"
   }
