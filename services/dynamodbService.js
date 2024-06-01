@@ -6,6 +6,31 @@ const createDynamoDbService = () => {
 
   const getTableName = () => tableName;
 
+  const queryCategories = async (userId, startTime, endTime) => {
+    try {
+      const params = {
+        TableName: getTableName(),
+        KeyConditionExpression: 'userId = :userId AND #timestamp BETWEEN :startTime AND :endTime',
+        ExpressionAttributeNames: {
+          '#timestamp': 'timestamp'
+        },
+        ExpressionAttributeValues: {
+          ':userId': userId,
+          ':startTime': startTime,
+          ':endTime': endTime
+        },
+        ProjectionExpression: 'category'
+      };
+  
+      const data = await dynamoDbDocClient.query(params).promise();
+      const categories = data.Items.map(item => item.category);
+      console.log(categories); // Log categories here for testing
+      return categories;
+    } catch (error) {
+      console.error("Unable to query:", error);
+      throw error;
+    }
+  };
   const putItem = async (item) => {
     const params = {
       TableName: getTableName(),
@@ -39,7 +64,8 @@ const createDynamoDbService = () => {
     getDynamoDbDocClient,
     getTableName,
     putItem,
-    getItem
+    getItem,
+    queryCategories
   };
 };
 

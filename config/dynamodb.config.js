@@ -12,7 +12,7 @@ const dynamoDbClient = new AWS.DynamoDB();
 // Create a DynamoDB document client
 const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: 'ap-south-1' });
 
-const tableName = 'sample-test-table'
+const tableName = 'TransactionsTable'
 
 module.exports = {
   dynamoDbClient,
