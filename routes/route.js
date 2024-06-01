@@ -5,8 +5,7 @@ const router = express.Router();
 const Controller = require('../controllers/controller');
 
 // Define protected routes
-router.get('/pieChart/categories', Controller.getCategories);
-router.get('/pieChart/transactionAmountByCategory', Controller.transactionAmountByCategory);
-router.get('/transactions', Controller.getTransactions);
+router.get('/pieChart/getTransactionAmountByCategory', Controller.getTransactionAmountByCategory);
+router.get('/transactions', Controller.getTransactionsList);
 
 module.exports = router;
