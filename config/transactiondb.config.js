@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 
 AWS.config.update({
-    region: 'ap-south-1',
+    region: process.env.region,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   });
@@ -10,7 +10,7 @@ AWS.config.update({
 const dynamoDbClient = new AWS.DynamoDB();
 
 // Create a DynamoDB document client
-const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: 'ap-south-1' });
+const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: process.env.region });
 
 const tableName = 'TransactionsTable'
 

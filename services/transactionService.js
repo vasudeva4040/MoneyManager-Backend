@@ -1,4 +1,4 @@
-const { dynamoDbDocClient, tableName } = require("../config/dynamodb.config");
+const { dynamoDbDocClient, tableName } = require("../config/transactiondb.config");
 
 // Helper function to create a DynamoDB service object
 const createDynamoDbService = () => {

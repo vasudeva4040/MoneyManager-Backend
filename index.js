@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express();
-const createDynamoDbService = require('./services/dynamodbService');
-const route = require('./routes/route')
+const createDynamoDbService = require('./services/userService');
+const route = require('./routes/router')
 
 const dynamoDbService = createDynamoDbService();
 
+app.use(express.json())
 app.use('/api', route);
 
 app.get('/', (req,res) => {
