@@ -1,5 +1,5 @@
-const { dynamoDbClient } = require('../config/homedb.config')
-const createDynamoDbService = require('../services/homeService')
+const { dynamoDbClient } = require('../config/dynamoDB.config')
+const createDynamoDbService = require('../services/transactionsDBService')
 
 const dynamoDbService = createDynamoDbService()
 

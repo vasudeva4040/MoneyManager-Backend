@@ -1,4 +1,8 @@
 const AWS = require('aws-sdk')
+require('dotenv').config()
+
+console.log("Ids",process.env.AWS_ACCESS_KEY_ID );
+
 
 AWS.config.update({
     region: process.env.region,
@@ -8,16 +12,15 @@ AWS.config.update({
 
 const dynamoDbClient = new AWS.DynamoDB()
 
-const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: process.env.region });
+const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-north-1'});
 
-const tableName = 'transactions';
+const transactionsTable = 'transactions';
 const userTable = 'user'
-// let region = process.env.region;
-// console.log(region);
+
 
 module.exports = {
     dynamoDbClient,
     dynamoDbDocClient,
-    tableName,
+    transactionsTable,
     userTable
 };

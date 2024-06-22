@@ -1,10 +1,10 @@
-const { dynamoDbDocClient, tableName } = require("../config/userdb.config");
+const { dynamoDbDocClient, userTable } = require("../config/dynamoDB.config");
 // const { timeStamp } = require("./timeStamp");
 
 const createDynamoDbService = () => {
   const getDynamoDbClient = () => dynamoDbDocClient;
 
-  const getTableName = () => tableName;
+  const getTableName = () => userTable;
 
   const getUserDetails = async (userId) => {
     try {
