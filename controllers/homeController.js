@@ -1,8 +1,17 @@
 const { dynamoDbClient } = require('../config/dynamoDB.config')
-const createDynamoDbService = require('../services/transactionsDBService')
+const createDynamoDbService = require('../services/homeService')
 
 const dynamoDbService = createDynamoDbService()
 
+const getBalance = async (req,res) => {
+    try{
+        const user = req.query.user
+        const balance = await dynamoDbService.getBalance(user)
+        res.status(200).json(balance)
+    }catch (error){
+        res.status(401).json({ message: "error fetching balance", error})
+    }
+}
 const getRecentTransactions = async (req,res) => {
     try{
         const user = req.query.user
@@ -37,6 +46,7 @@ const addIncome = async (req,res) => {
     }
 }
 module.exports = {
+    getBalance,
     getRecentTransactions,
     addNewExpense,
     addIncome

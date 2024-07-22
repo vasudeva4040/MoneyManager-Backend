@@ -1,5 +1,5 @@
 // controllers/expenseController.js
-const dynamoDbService = require('../services/transactionsDBService');
+const dynamoDbService = require('../services/expenseService');
 
 const updateExpense = async (req, res) => {
   const { userId, timestamp } = req.params;

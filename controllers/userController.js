@@ -4,7 +4,7 @@ const dynamoDbService = createDynamoDbService();
 
 const getUserDetails = async (req, res) => {
   try {
-    const userId = req.query.user;
+    const userId = req.query.userId;
     const userDetails = await dynamoDbService.getUserDetails(userId);
     if (!userDetails) {
       res.status(404).json({ message: "User not found" });
@@ -21,13 +21,7 @@ const updateUserDetails = async (req, res) => {
     const userId = req.query.userId;
     const { createDate, currentBalance, email, passwordHash, userName } =
       req.body;
-    const updatedUser = await dynamoDbService.updateUserDetails(userId, {
-      createDate,
-      currentBalance,
-      email,
-      passwordHash,
-      userName,
-    });
+    const updatedUser = await dynamoDbService.updateUserDetails(userId, req.body);
     if (!updatedUser) {
       res.status(404).json({ message: "User not found" });
     } else {
@@ -51,9 +45,7 @@ const deleteUser = async (req, res) => {
 
   const createUser = async (req,res) => {
     try{
-        const newUser = await dynamoDbService.createUserDetails(
-            req.query
-        )
+        const newUser = await dynamoDbService.createUserDetails(req.body)
         res.status(200).json(newUser)
     }catch (err) {
         console.log('Error',err)

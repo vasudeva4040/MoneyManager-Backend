@@ -14,13 +14,13 @@ const dynamoDbClient = new AWS.DynamoDB()
 
 const dynamoDbDocClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-north-1'});
 
-const transactionsTable = 'transactions';
+const transactionTable = 'transactions';
 const userTable = 'user'
 
 
 module.exports = {
     dynamoDbClient,
     dynamoDbDocClient,
-    transactionsTable,
+    transactionTable,
     userTable
 };

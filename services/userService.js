@@ -1,5 +1,5 @@
 const { dynamoDbDocClient, userTable } = require("../config/dynamoDB.config");
-// const { timeStamp } = require("./timeStamp");
+const { timeStamp } = require("../util/timeStamp");
 
 const createDynamoDbService = () => {
   const getDynamoDbClient = () => dynamoDbDocClient;
@@ -14,9 +14,7 @@ const createDynamoDbService = () => {
         ExpressionAttributeValues: {
           ":userId": Number(userId),
         },
-        ScanIndexForward: false,
-        Limit: 1,
-      };
+      }
       const data = await dynamoDbDocClient.query(params).promise();
       return data.Items[0];
     } catch (err) {
