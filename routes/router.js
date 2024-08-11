@@ -9,13 +9,13 @@ const userController = require("../controllers/userController");
 router.get('/balance',homeController.getBalance)
 router.get('/recents',homeController.getRecentTransactions);
 router.post('/expense',homeController.addNewExpense);
-router.put('/income',homeController.addIncome);
+router.post('/income',homeController.addIncome);
 
 router.get('/pieChart/getTransactionAmountByCategory', transactionController.getTransactionAmountByCategory);
 router.get('/transactions', transactionController.getTransactionsList);
 
 router.put('/expenses/:userId/:timestamp', expenseController.updateExpense);
-router.delete('/expenses/:userId/:timestamp', expenseController.deleteExpense);
+router.delete('/deleteExpense', expenseController.deleteExpense);
 
 router.get('/user', userController.getUserDetails);
 router.put('/user/update', userController.updateUserDetails);

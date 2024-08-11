@@ -1,5 +1,7 @@
 // controllers/expenseController.js
-const dynamoDbService = require('../services/expenseService');
+const createDynamoDbService = require('../services/expenseService');
+
+dynamoDbService = createDynamoDbService()
 
 const updateExpense = async (req, res) => {
   const { userId, timestamp } = req.params;
@@ -14,11 +16,10 @@ const updateExpense = async (req, res) => {
   }
 };
 const deleteExpense = async (req, res) => {
-    const { userId, timestamp } = req.params;
-  
     try {
-      await dynamoDbService.deleteExpense(userId, timestamp);
-      res.status(200).send('Expense deleted successfully');
+      const expense = req.body;
+      const deletedExpense = await dynamoDbService.deleteExpense(expense)
+      res.status(200).json(deletedExpense);
     } catch (error) {
       console.error('Error deleting expense:', error);
       res.status(500).send('Failed to delete expense');

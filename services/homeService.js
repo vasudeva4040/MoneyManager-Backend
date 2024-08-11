@@ -83,6 +83,18 @@ const createDynamoDbService = () => {
         }
     }
     const addIncome = async (item) => {
+        const newItem = {
+            'userId':Number(item.user),
+            'amount':Number(item.amount),
+            'category':item.category,
+            'description':item.description,
+            'transactionType':'Income',
+            'timeStamp':timeStamp()
+        }
+        const params = {
+            TableName:getTransactionTable(),
+            Item:newItem
+        }
         const updateParams = {
             Key:{
                 userId:Number(item.user)
@@ -98,6 +110,7 @@ const createDynamoDbService = () => {
             ReturnValues:"UPDATED_NEW"
         }
         try{
+            await dynamoDbDocClient.put(params).promise()
             const updatedBalance = await dynamoDbDocClient.update(updateParams).promise()
             return updatedBalance
         }catch (err){

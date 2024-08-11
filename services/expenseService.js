@@ -3,20 +3,10 @@ const {
     transactionTable,
   } = require("../config/dynamoDB.config");
   
-  // Helper function to create a DynamoDB service object
   const createDynamoDbService = () => {
     const getDynamoDbDocClient = () => dynamoDbDocClient;
   
-    const getTableName = () => transactionTable;
-  
-    /* This function will get the transaction amount per category in the given time range
-     * @params
-     *
-     * @userId: string - UserId,
-     * @startTime: string - Starting Time of the time range
-     * @endTime: string - Ending Time of the time range
-     * @transactionType: string - Indicates whether it is an expense or income transaction.
-     */
+    const getTableName = () => transactionTable
     const updateExpense = async (userId, timestamp, expenseData) => {
       try {
         // Step 1: Get the item with the matching userId and timestamp
@@ -28,7 +18,7 @@ const {
           },
         };
   
-        const getResult = await dynamoDb.get(getParams).promise();
+        const getResult = await dynamoDbDocClient.get(getParams).promise();
   
         if (!getResult.Item) {
           throw new Error("No matching expense found");
@@ -46,7 +36,7 @@ const {
         }
   
         const updateParams = {
-          TableName: "transactions",
+          TableName: getTableName(),
           Key: {
             userId: Number(userId),
             timeStamp: timestamp,
@@ -57,7 +47,7 @@ const {
           ReturnValues: "ALL_NEW",
         };
   
-        const updateResult = await dynamoDb.update(updateParams).promise();
+        const updateResult = await dynamoDbDocClient.update(updateParams).promise();
         return updateResult.Attributes;
       } catch (error) {
         console.error("Error updating expense:", error);
@@ -65,17 +55,22 @@ const {
       }
     };
   
-    const deleteExpense = async (userId, timestamp) => {
-      const params = {
-        TableName: "transactions",
-        Key: {
-          userId: Number(userId),
-          timeStamp: timestamp,
-        },
-      };
-  
-      await dynamoDb.delete(params).promise();
-    };
+    const deleteExpense = async (expense) => {
+        const params = {
+          TableName: getTableName(),
+          Key: {
+            userId: Number(expense.user),
+            timeStamp: expense.timeStamp
+          }
+        }
+        try{
+          await dynamoDbDocClient.delete(params).promise()
+          return "deleted"
+        }catch(err){
+            console.log('Error:',err)
+            throw(err)
+          }
+    }
   
     return {
       getDynamoDbDocClient,
