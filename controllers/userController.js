@@ -18,9 +18,9 @@ const getUserDetails = async (req, res) => {
 
 const updateUserDetails = async (req, res) => {
   try {
-    const userId = req.query.userId;
-    const { createDate, currentBalance, email, passwordHash, userName } =
-      req.body;
+    const userId = req.query.userId
+    // const { createDate, currentBalance, email, passwordHash, userName } =
+    //   req.body
     const updatedUser = await dynamoDbService.updateUserDetails(userId, req.body);
     if (!updatedUser) {
       res.status(404).json({ message: "User not found" });
@@ -35,8 +35,8 @@ const updateUserDetails = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const userId = req.query.userId;
-        await dynamoDbService.deleteUserDetails(userId);
-        res.status(200).json({ message: "User deleted successfully" });
+        const deleted = await dynamoDbService.deleteUserDetails(userId);
+        res.status(200).json({ message: "User deleted successfully" , deleted});
     } catch (error) {
         res.status(500).json({ message: "Error deleting user", error });
     }

@@ -33,7 +33,7 @@ const createDynamoDbService = () => {
             }
         };
         await dynamoDbDocClient.delete(params).promise();
-        return true;
+        return "sad to let you go"
     } catch (err) {
         console.log("Error:", err);
         throw err;
@@ -47,10 +47,8 @@ const createDynamoDbService = () => {
           userId: Number(userId),
         },
         UpdateExpression:
-          "set createDate=:createDate, currentBalance=:currentBalance, email=:email, passwordHash=:passwordHash, userName=:userName",
+          "set email=:email, passwordHash=:passwordHash, userName=:userName",
         ExpressionAttributeValues: {
-          ":createDate": updates.createDate,
-          ":currentBalance": updates.currentBalance,
           ":email": updates.email,
           ":passwordHash": updates.passwordHash,
           ":userName": updates.userName,
