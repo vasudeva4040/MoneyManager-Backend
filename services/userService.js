@@ -23,6 +23,29 @@ const createDynamoDbService = () => {
     }
   };
 
+  const getUserDetailsFromEmailOrUserName = async (userInput, passwordHash) => {
+    try {
+      const params = {
+        TableName: getTableName(), // Replace with your table name retrieval function or table name directly
+        FilterExpression: "(email = :userInput AND passwordHash = :passwordHash) OR (userName = :userInput AND passwordHash = :passwordHash)",
+        ExpressionAttributeValues: {
+          ":userInput": String(userInput), // Replace `userInput` with the email or username input from the user
+          ":passwordHash": String(passwordHash) // Replace `passwordHash` with the hashed password input
+        },
+        Limit: 10
+      };
+  
+      const data = await dynamoDbDocClient.scan(params).promise();
+      console.log("Data from DynamoDB table is", data);
+      return data.Items.length > 0 ? data.Items[0] : null; // Return the first matching item or null if none found
+    } catch (err) {
+      console.log("Error:", err);
+      throw err;
+    }
+  };
+  
+  
+
   
   const deleteUserDetails = async (userId) => {
     try {
@@ -63,7 +86,6 @@ const createDynamoDbService = () => {
     }
   };
 
-
   const createUserDetails = async (item) => {
     const newItem = {
         'userId':Number(item.userId),
@@ -87,6 +109,7 @@ const createDynamoDbService = () => {
 }
   
   return {
+    getUserDetailsFromEmailOrUserName,
     getDynamoDbClient,
     getTableName,
     getUserDetails,

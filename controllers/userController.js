@@ -16,6 +16,21 @@ const getUserDetails = async (req, res) => {
   }
 };
 
+const checkUserDetails = async (req, res) => {
+  try {
+    const userInput = req.query.userInput;
+    const passwordHash = req.query.passwordHash;
+    const userDetails = await dynamoDbService.getUserDetailsFromEmailOrUserName(userInput, passwordHash);
+    if (!userDetails) {
+      res.status(404).json({ message: "User not found" });
+    } else {
+      res.status(200).json(userDetails);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user details", error });
+  }
+};
+
 const updateUserDetails = async (req, res) => {
   try {
     const userId = req.query.userId
@@ -56,6 +71,7 @@ const deleteUser = async (req, res) => {
   
 module.exports = {
   getUserDetails,
+  checkUserDetails,
   updateUserDetails,
   deleteUser,
   createUser

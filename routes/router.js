@@ -18,6 +18,7 @@ router.put('/expenses/:userId/:timestamp', expenseController.updateExpense);
 router.delete('/deleteExpense', expenseController.deleteExpense);
 
 router.get('/user', userController.getUserDetails);
+router.get('/user/check', userController.checkUserDetails);
 router.put('/user/update', userController.updateUserDetails);
 router.delete('/user/delete',userController.deleteUser)
 router.post('/newuser', userController.createUser);
