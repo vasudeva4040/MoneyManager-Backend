@@ -5,6 +5,11 @@
 - **Endpoint:** `http://localhost:3000/api/user?userId=2`
 - **Description:** Retrieve user details by user ID.
 
+## Check User
+- **Method:** GET
+- **Endpoint:** `http://localhost:3000/api/user/check?userInput=Test&passwordHash=Test`
+- **Description:** Checks whether the user exists or not
+
 ## Update User Details
 - **Method:** PUT
 - **Endpoint:** `http://localhost:3000/api/user/update?userId=2`
