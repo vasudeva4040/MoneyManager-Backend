@@ -39,7 +39,7 @@ const createDynamoDbService = () => {
 
       const data = await dynamoDbDocClient.scan(params).promise();
       console.log("Data from DynamoDB table is", data);
-      return data.Items.length > 0 ? data.Items[0] : null; // Return the first matching item or null if none found
+      return data.Items.length > 0 ? data.Items[0] : {}; 
     } catch (err) {
       console.log("Error:", err);
       throw err;
