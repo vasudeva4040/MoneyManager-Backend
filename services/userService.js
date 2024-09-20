@@ -1,10 +1,11 @@
-const { dynamoDbDocClient, userTable } = require("../config/dynamoDB.config");
+const { dynamoDbDocClient, userTable,transactionTable } = require("../config/dynamoDB.config");
 const { timeStamp } = require("../util/timeStamp");
 
 const createDynamoDbService = () => {
   const getDynamoDbClient = () => dynamoDbDocClient;
 
   const getTableName = () => userTable;
+  const getTransactionsTableName = () => transactionTable;
 
   const getUserDetails = async (userId) => {
     try {
@@ -14,7 +15,7 @@ const createDynamoDbService = () => {
         ExpressionAttributeValues: {
           ":userId": Number(userId),
         },
-      }
+      };
       const data = await dynamoDbDocClient.query(params).promise();
       return data.Items[0];
     } catch (err) {
@@ -26,15 +27,16 @@ const createDynamoDbService = () => {
   const getUserDetailsFromEmailOrUserName = async (userInput, passwordHash) => {
     try {
       const params = {
-        TableName: getTableName(), // Replace with your table name retrieval function or table name directly
-        FilterExpression: "(email = :userInput AND passwordHash = :passwordHash) OR (userName = :userInput AND passwordHash = :passwordHash)",
+        TableName: getTableName(),
+        FilterExpression:
+          "(email = :userInput AND passwordHash = :passwordHash) OR (userName = :userInput AND passwordHash = :passwordHash)",
         ExpressionAttributeValues: {
-          ":userInput": String(userInput), // Replace `userInput` with the email or username input from the user
-          ":passwordHash": String(passwordHash) // Replace `passwordHash` with the hashed password input
+          ":userInput": String(userInput),
+          ":passwordHash": String(passwordHash),
         },
-        Limit: 10
+        Limit: 10,
       };
-  
+
       const data = await dynamoDbDocClient.scan(params).promise();
       console.log("Data from DynamoDB table is", data);
       return data.Items.length > 0 ? data.Items[0] : null; // Return the first matching item or null if none found
@@ -43,25 +45,45 @@ const createDynamoDbService = () => {
       throw err;
     }
   };
-  
-  
 
-  
   const deleteUserDetails = async (userId) => {
     try {
-        const params = {
-            TableName: getTableName(),
-            Key: {
-                userId: Number(userId)
-            }
+      const params = {
+        TableName: getTableName(),
+        Key: {
+          userId: Number(userId),
+        },
+      };
+      await dynamoDbDocClient.delete(params).promise();
+      // to delete all transactions
+      const transactionQueryParams = {
+        TableName: getTransactionsTableName(),
+        KeyConditionExpression: "userId = :userId",
+        ExpressionAttributeValues: {
+          ":userId": Number(userId),
+        },
+      };
+      const transactionsData = await dynamoDbDocClient.query(transactionQueryParams).promise();
+
+      // Delete each transaction
+      const deletePromises = transactionsData.Items.map(async (transaction) => {
+        const deleteTransactionParams = {
+          TableName: getTransactionsTableName(),
+          Key: {
+            userId: transaction.userId, // Partition key
+            timeStamp: transaction.timeStamp, // Sort key
+          },
         };
-        await dynamoDbDocClient.delete(params).promise();
-        return "sad to let you go"
+        return dynamoDbDocClient.delete(deleteTransactionParams).promise();
+      });
+
+      await Promise.all(deletePromises);
+      return "sad to let you go";
     } catch (err) {
-        console.log("Error:", err);
-        throw err;
+      console.log("Error:", err);
+      throw err;
     }
-};
+  };
   const updateUserDetails = async (userId, updates) => {
     try {
       const params = {
@@ -76,7 +98,7 @@ const createDynamoDbService = () => {
           ":passwordHash": updates.passwordHash,
           ":userName": updates.userName,
         },
-        ReturnValues: "UPDATED_NEW",
+        ReturnValues: "ALL_NEW",
       };
       const data = await dynamoDbDocClient.update(params).promise();
       return data.Attributes;
@@ -88,26 +110,26 @@ const createDynamoDbService = () => {
 
   const createUserDetails = async (item) => {
     const newItem = {
-        'userId':Number(item.userId),
-        'createDate':timeStamp(),
-        'currentBalance':Number(item.currentBalance),
-        'email': String(item.email),
-        'passwordHash':String(item.passwordHash),
-        'userName':String(item.userName)
-    }
+      userId: Number(item.userId),
+      createDate: timeStamp(),
+      currentBalance: Number(item.currentBalance),
+      email: String(item.email),
+      passwordHash: String(item.passwordHash),
+      userName: String(item.userName),
+    };
     const params = {
-        TableName:getTableName(),
-        Item:newItem
+      TableName: getTableName(),
+      Item: newItem,
+    };
+    try {
+      await dynamoDbDocClient.put(params).promise();
+      return newItem;
+    } catch (err) {
+      console.log("error", err);
+      throw err;
     }
-    try{
-        await dynamoDbDocClient.put(params).promise()
-        return newItem
-    }catch (err){
-        console.log("error",err)
-        throw(err)
-    }
-}
-  
+  };
+
   return {
     getUserDetailsFromEmailOrUserName,
     getDynamoDbClient,
@@ -115,7 +137,7 @@ const createDynamoDbService = () => {
     getUserDetails,
     updateUserDetails,
     deleteUserDetails,
-    createUserDetails
+    createUserDetails,
   };
 };
 
